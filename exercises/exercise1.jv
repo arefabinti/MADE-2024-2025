@@ -33,15 +33,15 @@ pipeline AirportInfoPipeline {
         header: true; // Indicates that the first row contains column headers
         // Defines the columns to include in the final table while excluding unnecessary fields
         columns: [
-            "Serial Number" oftype integer,
-            "Airport Name" oftype text,
-            "City" oftype text,
-            "Country" oftype text,
-            "IATA Code" oftype text,
-            "ICAO Code" oftype text,
+            "Lfd. Nummer" oftype integer,
+            "Name des Flughafens" oftype text,
+            "Ort" oftype text,
+            "Land" oftype text,
+            "IATA" oftype text,
+            "ICAO" oftype text,
             "Latitude" oftype decimal,
             "Longitude" oftype decimal,
-            "Elevation (m)" oftype integer,
+            "Altitude" oftype integer,
         ];
         // Columns 'Timezone', 'DST', 'Timezone Database', and 'Geo Point' are excluded to focus on essential data
     }
