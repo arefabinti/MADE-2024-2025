@@ -1,5 +1,9 @@
 pipeline AirportInfoPipeline {
 
+<<<<<<< HEAD
+=======
+  
+>>>>>>> b280f08ac37423465575c766e3df2b4f474cc36c
     DataFetcher -> RawFileProcessor;
 
     RawFileProcessor
@@ -9,11 +13,17 @@ pipeline AirportInfoPipeline {
 
     block DataFetcher oftype HttpExtractor {
         url: "https://opendata.rhein-kreis-neuss.de/api/explore/v2.1/catalog/datasets/rhein-kreis-neuss-flughafen-weltweit/exports/csv?lang=en&timezone=Europe%2FBerlin&use_labels=true&delimiter=%3B";
+<<<<<<< HEAD
      
     }
 
     block RawFileProcessor oftype TextFileInterpreter { 
        
+=======
+    }
+
+    block RawFileProcessor oftype TextFileInterpreter { 
+>>>>>>> b280f08ac37423465575c766e3df2b4f474cc36c
     }
 
     block CSVDataInterpreter oftype CSVInterpreter {
@@ -36,8 +46,13 @@ pipeline AirportInfoPipeline {
     }
 
     block DatabaseSaver oftype SQLiteLoader {
+<<<<<<< HEAD
         table: "airports";
         file: "airports.sqlite";
+=======
+        table: "airports"; 
+        file: "airports.sqlite"; 
+>>>>>>> b280f08ac37423465575c766e3df2b4f474cc36c
     }
 }
 
