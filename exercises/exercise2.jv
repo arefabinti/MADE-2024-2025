@@ -23,7 +23,7 @@ valuetype StadtteilVogelsang oftype text {
         ];
     }
 constraint VogelsangPrefix oftype RegexConstraint {
-        regex: /^Vogelsang-.*/;
+        regex: /^Vogelsang.*/;
     }
 
 valuetype GeoPointPattern oftype text {
