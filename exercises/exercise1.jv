@@ -1,7 +1,5 @@
-// 1. Pipeline to Extract, Transform, and Load Airport Data into an SQLite Database
 pipeline AirportInfoPipeline {
 
-    // Define the flow of data extraction, transformation, and loading
     DataFetcher -> RawFileProcessor;
 
     RawFileProcessor
@@ -9,29 +7,21 @@ pipeline AirportInfoPipeline {
         -> DataTableFormatter
         -> DatabaseSaver;
 
-    // 2. Step 1: Fetching the Airport Data from the Source
     block DataFetcher oftype HttpExtractor {
-        // URL to fetch CSV data from a remote API providing airport details globally
         url: "https://opendata.rhein-kreis-neuss.de/api/explore/v2.1/catalog/datasets/rhein-kreis-neuss-flughafen-weltweit/exports/csv?lang=en&timezone=Europe%2FBerlin&use_labels=true&delimiter=%3B";
-        // This block downloads the file from the web server using the specified URL
+     
     }
 
-    // 3. Step 2: Converting the Raw Downloaded File into Text Format
     block RawFileProcessor oftype TextFileInterpreter { 
-        // Converts the raw file fetched by the DataFetcher into a readable text format
-        // This block makes the file content accessible for further processing
+       
     }
 
-    // 4. Step 3: Parsing the Text File as a CSV Document
     block CSVDataInterpreter oftype CSVInterpreter {
-        delimiter: ";"; // Specifies the semicolon as the field separator for parsing CSV data
-        // Interprets the text file as CSV data with fields separated by the specified delimiter
+        delimiter: ";"; 
     }
 
-    // 5. Step 4: Structuring the Parsed CSV Data into a Table Format
     block DataTableFormatter oftype TableInterpreter {
-        header: true; // Indicates that the first row contains column headers
-        // Defines the columns to include in the final table while excluding unnecessary fields
+        header: true; 
         columns: [
             "Lfd. Nummer" oftype integer,
             "Name des Flughafens" oftype text,
@@ -43,14 +33,11 @@ pipeline AirportInfoPipeline {
             "Longitude" oftype decimal,
             "Altitude" oftype integer,
         ];
-        // Columns 'Timezone', 'DST', 'Timezone Database', and 'Geo Point' are excluded to focus on essential data
     }
 
-    // 6. Step 5: Storing the Processed Data into a SQLite Database
     block DatabaseSaver oftype SQLiteLoader {
-        table: "airports"; // Name of the database table to hold the airport information
-        file: "airports.sqlite"; // Name of the SQLite database file
-        // Saves the structured data into a local SQLite database
+        table: "airports";
+        file: "airports.sqlite";
     }
 }
 
