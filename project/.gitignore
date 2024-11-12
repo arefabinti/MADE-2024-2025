@@ -1,0 +1,23 @@
+# Ignore data files (SQLite DB, etc.)
+/data/
+
+# Ignore SQLite database files
+*.db
+
+# Ignore Python bytecode files and caches
+*.pyc
+__pycache__/
+
+# Ignore the Python virtual environment folder
+venv/
+.venv/
+
+# Ignore VS Code settings folder and workspace settings
+.vscode/
+
+# Ignore IDE config files (optional, if you're using JetBrains or another IDE)
+.idea/
+
+# Ignore system files (macOS and Windows)
+.DS_Store
+Thumbs.db
