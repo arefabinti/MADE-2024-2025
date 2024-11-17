@@ -89,4 +89,4 @@ pipeline EquitableRecoveryPipeline {
         file: "./country-stats.sqlite";
     }
     
-    }
+}
