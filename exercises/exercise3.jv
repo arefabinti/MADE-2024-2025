@@ -1,0 +1,92 @@
+
+pipeline EquitableRecoveryPipeline {
+
+  DataFetcher
+    -> ExcelProcessor;
+
+  ExcelProcessor
+    -> SheetSelector
+    -> DataRangePicker
+    -> BondIssuanceColumnRemover
+    -> BondTableBuilder
+    -> BondDataSaver;
+
+  DataRangePicker
+    -> GdpColumnRemover
+    -> GdpTableBuilder
+    -> GdpDataSaver;
+
+  block DataFetcher oftype HttpExtractor {
+    url: "https://thedocs.worldbank.org/en/doc/7d852628d96b9411d43e5d36d5dff941-0050062022/original/Graphs-Chapter-5-02082022.xlsx";
+  }
+
+  block ExcelProcessor oftype XLSXInterpreter { }
+
+  block SheetSelector oftype SheetPicker {
+    sheetName: "Figure S5.1.2";
+  }
+
+  block DataRangePicker oftype CellRangeSelector {
+    select: range P3:S45;
+  }
+
+  block BondIssuanceColumnRemover oftype ColumnDeleter {
+    delete: [column B, column C];
+  }
+
+  block GdpColumnRemover oftype ColumnDeleter {
+    delete: [column B, column D];
+  }
+
+  block BondTableBuilder oftype TableInterpreter {
+    header: false;
+    columns: [
+      "Country Code" oftype CustomCountryCode,
+      "Bond Issuance Share" oftype DecimalInRange
+    ];
+  }
+
+  block GdpTableBuilder oftype TableInterpreter {
+    header: false;
+    columns: [
+      "Country Code" oftype CustomCountryCode,
+      "GDP per Capita" oftype PositiveDecimal
+    ];
+  }
+
+  block BondDataSaver oftype SQLiteLoader {
+    table: "bondIssuance";
+    file: "./country-stats.sqlite";
+  }
+
+  block GdpDataSaver oftype SQLiteLoader {
+    table: "gdpPerCapita";
+    file: "./country-stats.sqlite";
+  }
+
+  valuetype PositiveDecimal oftype decimal {
+    constraints: [PositiveConstraint];
+  }
+
+  constraint PositiveConstraint on decimal:
+    value > 0;
+
+  valuetype DecimalInRange oftype decimal {
+    constraints: [RangeConstraint];
+  }
+
+  constraint RangeConstraint oftype RangeConstraint {
+    lowerBound: 0;
+    lowerBoundInclusive: true;
+    upperBound: 1;
+    upperBoundInclusive: true;
+  }
+
+  valuetype CustomCountryCode oftype text {
+    constraints: [CountryCodeConstraint];
+  }
+
+  constraint CountryCodeConstraint oftype RegexConstraint {
+    regex: /[A-Z]{3}/;
+  }
+}
