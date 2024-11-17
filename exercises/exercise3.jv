@@ -1,4 +1,3 @@
-
 pipeline EquitableRecoveryPipeline {
 
     DataFetcher
@@ -6,12 +5,13 @@ pipeline EquitableRecoveryPipeline {
 
     ExcelProcessor
         -> SheetSelector
-        -> RenameHeader
         -> DataRangePicker
+        -> BondIssuanceColumnRemover
         -> BondTableBuilder
         -> BondDataSaver;
 
     DataRangePicker
+        -> GdpColumnRemover
         -> GdpTableBuilder
         -> GdpDataSaver;
 
@@ -29,14 +29,12 @@ pipeline EquitableRecoveryPipeline {
         select: range P3:S45;
     }
 
-    block RenameHeader oftype CellWriter {
-        at: range P2:S2;  
-        write: [
-            "Country Code",         
-            "Economy",              
-            "GDP per Capita",       
-            "Bond Issuance Share"  
-        ];
+    block BondIssuanceColumnRemover oftype ColumnDeleter {
+        delete: [column B, column C];
+    }
+
+    block GdpColumnRemover oftype ColumnDeleter {
+        delete: [column B, column D];
     }
 
     block BondTableBuilder oftype TableInterpreter {
@@ -55,6 +53,34 @@ pipeline EquitableRecoveryPipeline {
         ];
     }
 
+    
+
+    valuetype PositiveDecimal oftype decimal {
+        constraints: [PositiveConstraint];
+    }
+
+    constraint PositiveConstraint on decimal:
+        value >= 0;
+
+    valuetype DecimalInRange oftype decimal {
+        constraints: [RangeConstraint];
+    }
+
+    constraint RangeConstraint oftype RangeConstraint {
+        lowerBound: 0;
+        lowerBoundInclusive: true;
+        upperBound: 1;
+        upperBoundInclusive: true;
+    }
+
+    valuetype CustomCountryCode oftype text {
+        constraints: [CountryCodeConstraints];
+    }
+
+    constraint CountryCodeConstraints oftype RegexConstraint {
+        regex: /^[A-Za-z]{3}$/;
+    }
+
     block BondDataSaver oftype SQLiteLoader {
         table: "bondIssuance";
         file: "./country-stats.sqlite";
@@ -64,28 +90,5 @@ pipeline EquitableRecoveryPipeline {
         table: "gdpPerCapita";
         file: "./country-stats.sqlite";
     }
-
-    valuetype PositiveDecimal oftype decimal {
-        constraints: [PositiveConstraint];
+    
     }
-
-    constraint PositiveConstraint on decimal:
-        value > 0;
-
-    valuetype DecimalInRange oftype decimal {
-        constraints: [RangeConstraint];
-    }
-
-    constraint RangeConstraint oftype RangeConstraint {
-        value >= 0 and value <= 1;
-    }
-
-    valuetype CustomCountryCode oftype text {
-        constraints: [CountryCodeConstraint];
-    }
-
-    constraint CountryCodeConstraint oftype RegexConstraint {
-        regex: /[A-Z]{3}/;
-    }
-  
-}
