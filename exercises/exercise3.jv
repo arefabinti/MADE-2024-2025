@@ -53,14 +53,12 @@ pipeline EquitableRecoveryPipeline {
         ];
     }
 
-    
-
     valuetype PositiveDecimal oftype decimal {
         constraints: [PositiveConstraint];
     }
 
     constraint PositiveConstraint on decimal:
-        value >= 0;
+        value > 0;
 
     valuetype DecimalInRange oftype decimal {
         constraints: [RangeConstraint];
