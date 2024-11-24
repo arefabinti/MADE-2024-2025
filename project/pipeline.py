@@ -86,7 +86,6 @@ def filter_and_aggregate_traffic_data(dataframe):
     aggregated_traffic_data = traffic_data_cleaned[['roadway_name', 'date']].copy()
     for new_interval in set(interval_mapping.values()):
         columns_to_aggregate = [col for col, interval in interval_mapping.items() if interval == new_interval]
-        #print(f"Aggregating columns for {new_interval}: {columns_to_aggregate}")  # Debugging output
         aggregated_traffic_data[new_interval] = traffic_data_cleaned[columns_to_aggregate].sum(axis=1)
 
     return aggregated_traffic_data
