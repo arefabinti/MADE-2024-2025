@@ -4,7 +4,7 @@
 Analysis of Traffic Volume and Population Trends in New York City 
 ## Main Question
 
-1.How does population growth affect traffic on New York City bridges and roads?
+1. How does population growth affect traffic on New York City bridges and roads?
 
 
 ## Description
