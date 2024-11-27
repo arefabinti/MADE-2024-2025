@@ -1,11 +1,16 @@
 # Project Plan
 
 ## Title
-Analysis of Traffic Volume and Population Trends in New York City 
+Analysis of Traffic Volume and Population Trends in New York City
+
 ## Main Question
 
+<<<<<<< HEAD
 How can we combine and evaluate population demographics and traffic data
 to guide urban development decisions?
+=======
+1. How can we combine and evaluate population demographics and traffic data to guide urban devel- opment decisions?
+>>>>>>> 1428529 (Project Report)
 
 ## Description
 
