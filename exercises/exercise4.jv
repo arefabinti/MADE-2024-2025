@@ -68,7 +68,7 @@ pipeline WeatherDataProcessing {
         constraints: [PositiveId];
     }
 
-    constraint MonthRange oftype RangeConstraint {
+    constraint MonthConstraint oftype RangeConstraint {
         lowerBound: 1;
         lowerBoundInclusive: true;
         upperBound: 12;
@@ -76,7 +76,7 @@ pipeline WeatherDataProcessing {
     }
 
     valuetype month oftype integer {
-        constraints:[MonthRange];
+        constraints:[MonthConstraint];
     }
 
     block DataChecker oftype TableInterpreter {
