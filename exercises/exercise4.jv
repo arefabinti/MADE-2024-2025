@@ -1,0 +1,98 @@
+pipeline WeatherDataProcessing {
+
+    DataDownloader 
+        -> ArchiveHandler
+        -> CSVSelector
+        -> TextInterpreter
+        -> CSVProcessor
+        -> DataColDeleter
+        -> HeaderUpdater
+        -> DataChecker
+        -> TempConverter
+        -> BatteryTempConverter
+        -> SQLiteDataSaver;
+
+    
+    block DataDownloader oftype HttpExtractor {
+        url: "https://www.mowesta.com/data/measure/mowesta-dataset-20221107.zip";
+    }
+
+    
+    block ArchiveHandler oftype ArchiveInterpreter {
+        archiveType: "zip";
+    }
+
+    block CSVSelector oftype FilePicker {
+        path: "/data.csv";
+    }
+
+    block TextInterpreter oftype TextFileInterpreter {}
+
+    block CSVProcessor oftype CSVInterpreter {
+        delimiter: ";";
+    }
+    block DataColDeleter oftype ColumnDeleter {
+        delete: [
+            column F, column G, column H, column I
+        ];
+    }
+
+    block HeaderUpdater oftype CellWriter {
+        at: range A1:F1;
+        write: ["id", "producer", "model", "month", "temperature", "battery_temperature"];
+    }
+   
+    transform CelsiusToFahrenheit {
+        from CelsiusValue oftype decimal;
+        to FahrenheitValue oftype decimal;
+
+        FahrenheitValue: (CelsiusValue * 9/5) + 32;
+    }
+
+    block TempConverter oftype TableTransformer {
+        inputColumns: ["temperature"];
+        outputColumn: "temperature";
+        uses: CelsiusToFahrenheit;
+    }
+
+    block BatteryTempConverter oftype TableTransformer {
+        inputColumns: ["battery_temperature"];
+        outputColumn: "battery_temperature";
+        uses: CelsiusToFahrenheit;
+    }
+
+    constraint PositiveId on integer:
+        value > 0;
+
+    valuetype id oftype integer {
+        constraints: [PositiveId];
+    }
+
+    constraint MonthRange oftype RangeConstraint {
+        lowerBound: 1;
+        lowerBoundInclusive: true;
+        upperBound: 12;
+        upperBoundInclusive: true;
+    }
+
+    valuetype month oftype integer {
+        constraints:[MonthRange];
+    }
+
+    block DataChecker oftype TableInterpreter {
+        header: true;
+        columns: [
+            "id" oftype id,
+            "producer" oftype text,
+            "model" oftype text,
+            "month" oftype month,
+            "temperature" oftype decimal,
+            "battery_temperature" oftype decimal
+        ];
+    }
+
+    block SQLiteDataSaver oftype SQLiteLoader {
+        table: "temperatures";
+        file: "./temperatures.sqlite";
+    }
+}
