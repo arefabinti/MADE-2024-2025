@@ -24,13 +24,6 @@ jobs:
       - name: Install dependencies
         run: pip install -r project/requirements.txt
 
-      - name: Run pipeline.py to generate database
-        run: python ./project/pipeline.py  # Ensure this creates data_base.db
-
-      - name: Debug database existence
-        run: |
-          echo "Checking contents of the data directory:"
-          ls -R ./data
-
+     
       - name: Run tests
-        run: python ./project/test_pipeline.py  # Directly run Python tests
+        run: python ./project/test.sh  # Directly run Python tests
