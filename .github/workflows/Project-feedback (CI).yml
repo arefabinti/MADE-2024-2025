@@ -26,4 +26,4 @@ jobs:
 
      
       - name: Run tests
-        run: python ./project/test.sh  # Directly run Python tests
+        run: python ./project/tests.sh  # Directly run Python tests
