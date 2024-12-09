@@ -37,12 +37,7 @@ jobs:
       
       # Step 6: Execute tests.sh 
       - name: Execute tests.sh
-        run: chmod +x ./project/tests.sh  # Ensure tests.sh is executable
-
-      # Step 7: Run the pipeline (e.g. the pipeline script generating data)
-      - name: Run pipeline.py
-        run: |
-          python ./project/pipeline.py  # Run pipeline.py to generate files (CSV, SQLite)
+        run: chmod +x ./project/tests.sh  # Ensure tests.sh is executable     
 
       # Step 8: Run tests.sh script to verify functionality
       - name: Run tests.sh
