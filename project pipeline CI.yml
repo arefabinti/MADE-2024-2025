@@ -1,0 +1,30 @@
+name: project pipeline CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the code from the repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Set up dependencies (optional, if your project needs them)
+    - name: Set up Python (example for Python projects)
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    # Make the tests.sh script executable
+    - name: Make tests.sh executable
+      run: chmod +x tests.sh
+
+    # Run the tests
+    - name: Run tests
+      run: ./tests.sh
+
