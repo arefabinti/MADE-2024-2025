@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Variables
-PYTHON_EXECUTABLE=$(which python3)  
-DATABASE_PATH="./data/data_base.db"  
-TEST_SCRIPT="./project/test_pipeline.py"  
+PYTHON_EXECUTABLE=$(which python3)
+DATABASE_PATH="./data/data_base.db"
+TEST_SCRIPT="./project/test_pipeline.py"
 
 debug_file_structure() {
     echo "Debugging file structure..."
@@ -21,7 +21,7 @@ check_prerequisites() {
     fi
 
     if [ ! -f "$DATABASE_PATH" ]; then
-        echo "Error: Database file '$DATABASE_PATH' not found. Run the pipeline before testing."
+        echo "Error: Database file '$DATABASE_PATH' not found. Ensure pipeline.py generates the database."
         exit 1
     fi
     echo "All prerequisites are met."

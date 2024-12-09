@@ -1,5 +1,6 @@
 # Ignore data files (SQLite DB, etc.)
-/data/
+/data/*
+!data/
 
 # Ignore SQLite database files
 *.db
