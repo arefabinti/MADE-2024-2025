@@ -1,0 +1,49 @@
+name: Project-feedback (CI)
+
+on:
+  push:
+    branches:
+      - main  # Trigger this action on push to the 'main' branch
+  pull_request:
+    branches:
+      - main  # Trigger on pull requests to 'main' branch
+
+jobs:
+  test:
+    runs-on: ubuntu-latest  # Runs the job on an Ubuntu runner
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Python 3
+      - name: Set up Python 3
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'  # use the latest Python version 3.x (e.g., 3.11, 3.10)
+
+      # Step 3: Install dependencies from the 'project/requirements.txt'
+      - name: Install dependencies
+        run: |
+          pip install -r project/requirements.txt  # requirements.txt in the 'project' folder
+
+      # Step 4: Install necessary system packages
+      - name: Install necessary packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl bash
+
+      
+      # Step 6: Execute tests.sh 
+      - name: Execute tests.sh
+        run: chmod +x ./project/tests.sh  # Ensure tests.sh is executable
+
+      # Step 7: Run the pipeline (e.g. the pipeline script generating data)
+      - name: Run pipeline.py
+        run: |
+          python ./project/pipeline.py  # Run pipeline.py to generate files (CSV, SQLite)
+
+      # Step 8: Run tests.sh script to verify functionality
+      - name: Run tests.sh
+        run: ./project/tests.sh  # Execute the tests
