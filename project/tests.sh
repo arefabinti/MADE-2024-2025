@@ -3,7 +3,7 @@
 # Variables
 PYTHON_EXECUTABLE=$(which python3)  
 DATABASE_PATH="../data/data_base.db"
-TEST_SCRIPT="test_pipeline.py"
+TEST_SCRIPT="./project/test_pipeline.py"
 
 #Check prerequisites
 check_prerequisites() {
