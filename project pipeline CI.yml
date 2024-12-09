@@ -10,20 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout the code from the repository
-    - name: Checkout code
-      uses: actions/checkout@v3
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    # Set up dependencies (optional, if your project needs them)
-    - name: Set up Python (example for Python projects)
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
+      # Step 2: Navigate to the project folder
+      - name: Change directory to project folder
+        run: cd my_project
 
-    # Make the tests.sh script executable
-    - name: Make tests.sh executable
-      run: chmod +x tests.sh
+      # Step 3: Make the tests.sh script executable
+      - name: Make tests.sh executable
+        run: chmod +x project/tests.sh
 
-    # Run the tests
-    - name: Run tests
-      run: ./tests.sh
+      # Step 4: Run the tests
+      - name: Run tests
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: project/tests.sh
