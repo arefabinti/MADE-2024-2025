@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest  # Runs the job on an Ubuntu runner
+    runs-on: ubuntu-latest  # Run the job on an Ubuntu runner
 
     steps:
       # Step 1: Checkout the code
@@ -21,29 +21,36 @@ jobs:
       - name: Set up Python 3
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'  # use the latest Python version 3.x (e.g., 3.11, 3.10)
+          python-version: '3.x'  # Use the latest Python version 3.x
 
-      # Step 3: Install dependencies from the 'project/requirements.txt'
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: |
-          pip install -r project/requirements.txt  # requirements.txt in the 'project' folder
+          pip install -r project/requirements.txt
 
-      # Step 4: Install necessary system packages
-      - name: Install necessary packages
+      # Step 4: Debug - Ensure the correct file structure
+      - name: Debug file structure
         run: |
-          sudo apt-get update
-          sudo apt-get install -y curl bash
+          echo "Listing files in the root directory:"
+          ls -R .
+          echo "Listing files in the project directory:"
+          ls -R ./project
 
-      
-      # Step 6: Execute tests.sh 
-      - name: Execute tests.sh
-        run: chmod +x ./project/tests.sh  # Ensure tests.sh is executable
-
-      # Step 7: Run the pipeline (e.g. the pipeline script generating data)
+      # Step 5: Run pipeline.py to generate datasets
       - name: Run pipeline.py
         run: |
-          python ./project/pipeline.py  # Run pipeline.py to generate files (CSV, SQLite)
+          python ./project/pipeline.py  # Ensure this script dynamically generates the dataset
 
-      # Step 8: Run tests.sh script to verify functionality
+      # Step 6: Debug - Confirm datasets are created
+      - name: Confirm datasets
+        run: |
+          echo "Listing files in the data directory:"
+          ls -R ./data
+
+      # Step 7: Ensure tests.sh is executable
+      - name: Ensure tests.sh is executable
+        run: chmod +x ./project/tests.sh
+
+      # Step 8: Run the tests
       - name: Run tests.sh
-        run: ./project/tests.sh  # Execute the tests
+        run: ./project/tests.sh
