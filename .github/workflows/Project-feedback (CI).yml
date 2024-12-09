@@ -3,54 +3,34 @@ name: Project-feedback (CI)
 on:
   push:
     branches:
-      - main  # Trigger this action on push to the 'main' branch
+      - main
   pull_request:
     branches:
-      - main  # Trigger on pull requests to 'main' branch
+      - main
 
 jobs:
   test:
-    runs-on: ubuntu-latest  # Run the job on an Ubuntu runner
+    runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Set up Python 3
       - name: Set up Python 3
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'  # Use the latest Python version 3.x
+          python-version: '3.x'
 
-      # Step 3: Install dependencies
       - name: Install dependencies
-        run: |
-          pip install -r project/requirements.txt
+        run: pip install -r project/requirements.txt
 
-      # Step 4: Debug - Ensure the correct file structure
-      - name: Debug file structure
-        run: |
-          echo "Listing files in the root directory:"
-          ls -R .
-          echo "Listing files in the project directory:"
-          ls -R ./project
+      - name: Run pipeline.py to generate database
+        run: python ./project/pipeline.py  # Ensure this creates data_base.db
 
-      # Step 5: Run pipeline.py to generate datasets
-      - name: Run pipeline.py
+      - name: Debug database existence
         run: |
-          python ./project/pipeline.py  # Ensure this script dynamically generates the dataset
-
-      # Step 6: Debug - Confirm datasets are created
-      - name: Confirm datasets
-        run: |
-          echo "Listing files in the data directory:"
+          echo "Checking contents of the data directory:"
           ls -R ./data
 
-      # Step 7: Ensure tests.sh is executable
-      - name: Ensure tests.sh is executable
-        run: chmod +x ./project/tests.sh
-
-      # Step 8: Run the tests
-      - name: Run tests.sh
-        run: ./project/tests.sh
+      - name: Run tests
+        run: python ./project/test_pipeline.py  # Directly run Python tests
