@@ -27,4 +27,3 @@ jobs:
     # Run the tests
     - name: Run tests
       run: ./tests.sh
-
