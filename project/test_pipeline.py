@@ -2,7 +2,9 @@ import sqlite3
 import os
 
 # Path to the SQLite database
-DATABASE_PATH = '../data/data_base.db'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__)) 
+DATABASE_PATH = os.path.join(BASE_DIR, '../data/data_base.db')
+
 
 def test_database_exists():
     assert os.path.exists(DATABASE_PATH), "Database file does not exist."
