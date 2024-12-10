@@ -4,7 +4,7 @@
 PYTHON_EXECUTABLE=$(which python3)
 DATABASE_PATH="./data/data_base.db"
 PIPELINE_SCRIPT="./project/pipeline.py"
-TEST_SCRIPT="./project/test_pipeline.py"
+TEST_SCRIPT="./project/tests.py"
 
 # Function to check prerequisites
 check_prerequisites() {
