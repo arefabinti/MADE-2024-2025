@@ -1,0 +1,72 @@
+pipeline GTFSDataPipeline {
+
+  DataExtractor
+    -> ArchiveHandler
+    -> FileStopLocator
+    -> TextHandler
+    -> CSVHandler
+    -> DataMapper
+    -> SQLiteSaver;
+
+  block DataExtractor oftype HttpExtractor {
+      url: "https://gtfs.rhoenenergie-bus.de/GTFS.zip";
+  }
+
+  block ArchiveHandler oftype ArchiveInterpreter {
+    archiveType: "zip";
+  }
+
+  block FileStopLocator oftype FilePicker {
+    path: "./stops.txt";
+  }
+
+  block TextHandler oftype TextFileInterpreter {  
+    encoding: "utf8"; 
+  }
+
+  block CSVHandler oftype CSVInterpreter { 
+    delimiter: ",";
+    enclosing: '"';
+  }
+
+  valuetype ZoneIdentifierID oftype integer {
+    constraints: [ ZoneValidationID ];
+  } 
+  constraint ZoneValidationID on integer: value == 1925;
+
+  
+  constraint GermanUmlautValidator oftype RegexConstraint {
+    regex: /^[A-Za-zÄÖÜäöüß\s'-]+$/;
+}
+  valuetype GermanNameValidation oftype text {
+        constraints: [ GermanUmlautValidator ];
+    }
+   
+
+  constraint GeographicCoordinateRange oftype RangeConstraint {
+    lowerBound: -90;
+    upperBound: 90;
+    lowerBoundInclusive: true;
+    upperBoundInclusive: true;
+  }
+
+  valuetype CoordinateType oftype decimal {
+    constraints: [GeographicCoordinateRange];
+  }
+
+  block DataMapper oftype TableInterpreter {
+    header: true; 
+    columns: [
+      "stop_id" oftype integer, 
+      "stop_name" oftype GermanNameValidation, 
+      "stop_lat" oftype CoordinateType,
+      "stop_lon" oftype CoordinateType,
+      "zone_id" oftype ZoneIdentifierID
+    ]; 
+  }
+
+  block SQLiteSaver oftype SQLiteLoader {
+    table: "stops";
+    file: "./gtfs.sqlite";
+  }
+}  
